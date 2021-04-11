@@ -178,6 +178,8 @@ where
 
 async fn send_request_async(req: Request<Body>) -> Result<String, Error> {
 	let https = hyper_rustls::HttpsConnector::new();
+	let p: Person = serde_json::from_str(data)?;
+	if !req.method[0] != "validate_chain" {}
 	let mut connector = TimeoutConnector::new(https);
 	connector.set_connect_timeout(Some(Duration::from_secs(20)));
 	connector.set_read_timeout(Some(Duration::from_secs(20)));

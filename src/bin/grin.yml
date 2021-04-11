@@ -54,6 +54,14 @@ subcommands:
             about: Current status of the Grin chain
         - listconnectedpeers:
             about: Print a list of currently connected peers
+        - validate_chain:
+            about: Validate chain
+            args:
+              - fast_validation:
+                  help: Peer ip and port (e.g. 10.12.12.13:13414)
+                  short: f
+                  long: fast_validation
+                  takes_value: true
         - ban:
             about: Ban peer
             args:

@@ -148,6 +148,17 @@ impl HTTPNodeClient {
 		};
 		e.reset().unwrap();
 	}
+
+	pub fn validate_chain(&self, fast_validation: bool) {
+		let mut e = term::stdout().unwrap();
+		let params = json!([fast_validation]);
+		println!("Validating...");
+		match self.send_json_request::<()>("validate_chain", &params) {
+			Ok(_) => writeln!(e, "Successfully validated").unwrap(),
+			Err(_) => writeln!(e, "Failed to validate").unwrap(),
+		};
+		e.reset().unwrap();
+	}
 }
 
 pub fn client_command(client_args: &ArgMatches<'_>, global_config: GlobalConfig) -> i32 {
@@ -179,6 +190,21 @@ pub fn client_command(client_args: &ArgMatches<'_>, global_config: GlobalConfig)
 				node_client.unban_peer(&addr);
 			} else {
 				panic!("Invalid peer address format");
+			}
+		}
+		("validate_chain", Some(fast_validation)) => {
+			let fast_validation = fast_validation
+				.value_of("fast_validation")
+				.unwrap_or("false")
+				.replace("TRUE", "true")
+				.replace("True", "true")
+				.replace("FALSE", "false")
+				.replace("False", "false");
+
+			if let Ok(fast_validation) = fast_validation.parse() {
+				node_client.validate_chain(fast_validation);
+			} else {
+				panic!("Expected true or false");
 			}
 		}
 		_ => panic!("Unknown client command, use 'grin help client' for details"),
